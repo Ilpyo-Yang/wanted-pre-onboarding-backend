@@ -100,6 +100,7 @@ class BoardControllerTest {
 
   @Test
   @DisplayName("과제 6. 특정 게시글을 수정하는 엔드포인트")
+  @Rollback(value = false)
   void editPost() throws Exception {
     String url = "/api/board/edit";
     BoardEditForm form = BoardEditForm.builder()
@@ -107,13 +108,14 @@ class BoardControllerTest {
         .category("Notice")
         .subject("게시판 테스트를 진행합니다.")
         .contents("editing 통합테스트")
-        .createdBy("d781979f-964c-4308-86a4-9c00426255dc")
+        .createdBy("2af67b39-bc83-4cbe-9421-ff632e3839f8")
         .build();
 
-    String token = "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjpbeyJhdXRob3JpdHkiOiJVU0VSIn1dLCJzdWIiOiJ3YW50ZWRAZ21haWwuY29tIiwiaWF0IjoxNjkxMDY3MzQxLCJleHAiOjE2OTEwNjc0Mjd9.rhgVuB_vTfV6mpKL4sCJJ3tkusr8ggzzgcMUbPhpkCE";
+    String token =
+      "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjpbeyJhdXRob3JpdHkiOiJVU0VSIn1dLCJzdWIiOiJ3YW50ZWRAZ21haWwuY29tIiwiaWF0IjoxNjkxMjI5NTIwLCJleHAiOjE2OTEyMjk2MDZ9.V9TQF-hQfVrGdDyMuDUbnDCWKJSISSZ3DOpznCB-DrM";
     ResultActions resultActions = mockMvc.perform(
         post(url)
-            .header("Authorization", "Bearer " + token) // 토큰을 Authorization 헤더에 추가
+            .header("Authorization", "Bearer " + token)
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(form))
     );
@@ -126,12 +128,16 @@ class BoardControllerTest {
 
   @Test
   @DisplayName("과제 7. 특정 게시글을 삭제하는 엔드포인트")
+  @Rollback(value = false)
   void deletePost() throws Exception {
     String url = "/api/board/delete";
     String uuid = "5babdf80-0be4-4a0f-8b27-7b8e473dd7e1";
 
+    String token =
+        "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjpbeyJhdXRob3JpdHkiOiJVU0VSIn1dLCJzdWIiOiJ3YW50ZWRAZ21haWwuY29tIiwiaWF0IjoxNjkxMjMwMjcwLCJleHAiOjE2OTEyMzAzNTZ9.4mg8mrvNc6QIF1liTunkpkBSlXMjdBP2Ee3WKqNsGUg";
     ResultActions resultActions = mockMvc.perform(
         post(url)
+            .header("Authorization", "Bearer " + token)
             .contentType(MediaType.APPLICATION_JSON)
             .content(uuid)
     );

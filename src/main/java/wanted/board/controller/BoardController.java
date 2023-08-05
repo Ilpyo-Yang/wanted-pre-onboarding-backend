@@ -18,13 +18,14 @@ import wanted.board.dto.BoardDto;
 import wanted.board.dto.form.BoardEditForm;
 import wanted.board.entity.Board;
 import wanted.board.repository.BoardRepository;
+import wanted.board.repository.UserRepository;
 
 @Controller
 @RequestMapping("/api/board")
 @RequiredArgsConstructor
 public class BoardController {
     private final BoardRepository boardRepository;
-
+    private final UserRepository userRepository;
     ModelMapper modelMapper = new ModelMapper();
 
 
@@ -70,7 +71,9 @@ public class BoardController {
 
         Board board = boardRepository.findById(form.getUuid())
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        if(board.getCreatedBy().equals(principal.getName())){
+        String userUuid = userRepository.findByEmail(principal.getName())
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND)).getUuid();
+        if(board.getCreatedBy().equals(userUuid)){
             board.setCategory(board.getCategory());
             board.setSubject(board.getSubject());
             board.setContents(board.getContents());
@@ -92,7 +95,10 @@ public class BoardController {
 
         Board board = boardRepository.findById(uuid)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        if(board.getCreatedBy().equals(principal.getName())){
+
+        String userUuid = userRepository.findByEmail(principal.getName())
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND)).getUuid();
+        if(board.getCreatedBy().equals(userUuid)){
             boardRepository.delete(board);
             return ResponseEntity.ok("success");
         }else{
