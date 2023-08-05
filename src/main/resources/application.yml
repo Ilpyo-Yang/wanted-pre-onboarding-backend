@@ -1,0 +1,31 @@
+# Jasypt Config
+jasypt:
+    encryptor:
+        bean: jasyptEncryptor
+        password : jasypt
+
+spring:
+    datasource:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/board?
+        username: ENC(ht2MlxVPcmNxG4KsuXI0zQ==)
+        password: ENC(esd5Cn4+oi13KBCzy96fag8Q3XQII9L2)
+        column:
+            encrypt:
+                    key: ENC(vSpSQWvDSsZn/3yVCbkE51/NMgE/iB2FLVbYoiSvgdgPYPiNNXMcprpH5FXYWC0+)
+    jpa:
+        hibernate:
+            ddl-auto: update
+
+logging:
+    level:
+        org:
+            springframework:
+                security: DEBUG
+
+jwt:
+    header: Authorization
+    secret: ENC(6W9FeN7Ec2gV813Og8eJJ3pXxs4OrJvl/YU6W8r/HwGZ1xtPxpnfFzBc9qyDdd6o62gdbWYLgKlbFvDdTZCHrQ==)
+    tokenValidTime: 86400
+
+
