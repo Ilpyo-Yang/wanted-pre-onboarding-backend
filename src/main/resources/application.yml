@@ -9,7 +9,7 @@ spring:
         driver-class-name: com.mysql.cj.jdbc.Driver
         url: jdbc:mysql://localhost:3306/board?
         username: ENC(ht2MlxVPcmNxG4KsuXI0zQ==)
-        password: ENC(esd5Cn4+oi13KBCzy96fag8Q3XQII9L2)
+        password:
         column:
             encrypt:
                     key: ENC(vSpSQWvDSsZn/3yVCbkE51/NMgE/iB2FLVbYoiSvgdgPYPiNNXMcprpH5FXYWC0+)

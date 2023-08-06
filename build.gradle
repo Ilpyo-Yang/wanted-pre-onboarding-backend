@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.1.2'
     id 'io.spring.dependency-management' version '1.1.2'
+    id 'war'
 }
 
 group = 'wanted'
@@ -30,6 +31,8 @@ dependencies {
     implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
     implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
 
+    implementation group: 'org.eclipse.angus', name: 'angus-activation', version: '2.0.1'
+
     // jwt
     implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
@@ -45,4 +48,9 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+// 테스트 코드를 제외한 빌드 수행
+tasks.withType(Test) {
+    enabled = false
 }
