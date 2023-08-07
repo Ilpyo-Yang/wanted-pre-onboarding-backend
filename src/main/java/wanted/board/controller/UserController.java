@@ -42,7 +42,7 @@ public class UserController {
         if(vaildationCheck(dto.getEmail(), dto.getPassword())){
             return ResponseEntity.badRequest().body(error);
         }
-        if(userRepository.findByEmail(dto.getEmail())!=null){
+        if(userRepository.findByEmail(dto.getEmail()).stream().count()!=0){
             return ResponseEntity.badRequest().body(error);
         }
 

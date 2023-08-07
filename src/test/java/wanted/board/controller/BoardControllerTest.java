@@ -48,11 +48,14 @@ class BoardControllerTest {
         .subject("게시판 테스트를 진행합니다.")
         .contents("posting 통합테스트")
         .createdDate(LocalDateTime.now())
-        .createdBy("bcd29cf7-9861-47c8-97a6-d880e153d3f0")
         .build();
+
+    String token =
+        "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjpbeyJhdXRob3JpdHkiOiJVU0VSIn1dLCJzdWIiOiJ3YW50ZWRAZ21haWwuY29tIiwiaWF0IjoxNjkxMjI5NTIwLCJleHAiOjE2OTEyMjk2MDZ9.V9TQF-hQfVrGdDyMuDUbnDCWKJSISSZ3DOpznCB-DrM";
 
     ResultActions resultActions = mockMvc.perform(
         post(url)
+            .header("Authorization", "Bearer " + token)
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(dto))
     );
@@ -77,7 +80,6 @@ class BoardControllerTest {
         .andExpect(status().isOk())
         .andDo(print());
   }
-  //  Body = {"content":[{"createdDate":"2023-08-05T12:39:07.450353","lastModifiedDate":null,"createdBy":null,"lastModifiedBy":null,"uuid":"5babdf80-0be4-4a0f-8b27-7b8e473dd7e1","category":"Notice","subject":"게시판 테스트를 진행합니다.","contents":"posting 통합테스트"}],"pageable":{"sort":{"empty":true,"sorted":false,"unsorted":true},"offset":0,"pageSize":20,"pageNumber":0,"unpaged":false,"paged":true},"last":true,"totalElements":1,"totalPages":1,"size":20,"number":0,"sort":{"empty":true,"sorted":false,"unsorted":true},"first":true,"numberOfElements":1,"empty":false}
 
 
   @Test

@@ -1,5 +1,6 @@
 package wanted.board.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -24,6 +25,7 @@ public class Board extends BaseTimeEntity{
   private String subject;
   private String contents;
 
+  @JsonIgnore
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name="user_uuid")
   private User user;
