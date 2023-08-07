@@ -2,6 +2,7 @@ package wanted.board.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,14 +27,13 @@ class UserControllerTest {
   @Resource
   ObjectMapper objectMapper;
 
-
   @Test
   @DisplayName("과제 1. 사용자 회원가입 엔드포인트")
   @Rollback(value = false)
   void register() throws Exception {
     String url = "/api/user/register";
     UserDto dto = UserDto.builder()
-        .email("wanted@gmail.com")
+        .email("wantedd@gmail.com")
         .password("12345678")
         .name("회원가입")
         .role("USER")
@@ -48,6 +48,7 @@ class UserControllerTest {
 
     resultActions
         .andExpect(status().isOk())
+        .andExpect(jsonPath("$.token").isNotEmpty())
         .andDo(print());
   }
 
@@ -57,7 +58,7 @@ class UserControllerTest {
   void login() throws Exception {
     String url = "/api/user/login";
     LoginForm form = LoginForm.builder()
-        .email("wanted@gmail.com")
+        .email("TEST@gmail.com")
         .password("12345678")
         .build();
 
@@ -69,6 +70,7 @@ class UserControllerTest {
 
     resultActions
         .andExpect(status().isOk())
+        .andExpect(jsonPath("$.token").isNotEmpty())
         .andDo(print());
   }
 }

@@ -1,13 +1,17 @@
 package wanted.board.controller;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
 import java.time.LocalDateTime;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +21,11 @@ import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import wanted.board.dto.BoardDto;
 import wanted.board.dto.form.BoardEditForm;
+import wanted.board.repository.BoardRepository;
 import wanted.board.repository.UserRepository;
 import wanted.board.security.TokenProvider;
 
@@ -34,6 +40,8 @@ class BoardControllerTest {
   @Autowired
   UserRepository userRepository;
   @Autowired
+  BoardRepository boardRepository;
+  @Autowired
   PasswordEncoder passwordEncoder;
   @Autowired
   TokenProvider tokenProvider;
@@ -47,11 +55,12 @@ class BoardControllerTest {
         .category("Notice")
         .subject("게시판 테스트를 진행합니다.")
         .contents("posting 통합테스트")
+        .userUuid("1da3da6b-bd8f-4835-be2a-bfb1d6d2da09")
         .createdDate(LocalDateTime.now())
         .build();
 
     String token =
-        "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjpbeyJhdXRob3JpdHkiOiJVU0VSIn1dLCJzdWIiOiJ3YW50ZWRAZ21haWwuY29tIiwiaWF0IjoxNjkxMjI5NTIwLCJleHAiOjE2OTEyMjk2MDZ9.V9TQF-hQfVrGdDyMuDUbnDCWKJSISSZ3DOpznCB-DrM";
+        "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjpbeyJhdXRob3JpdHkiOiJVU0VSIn1dLCJzdWIiOiJURVNUQGdtYWlsLmNvbSIsImlhdCI6MTY5MTQwMzUyOSwiZXhwIjoxNjkxNDAzNjE2fQ.BBjmf89ZKGR0ZUUpIQjFd8WoSwr-Qhvzg8gSMkLZKWs";
 
     ResultActions resultActions = mockMvc.perform(
         post(url)
@@ -62,6 +71,7 @@ class BoardControllerTest {
 
     resultActions
         .andExpect(status().isOk())
+        .andExpect(jsonPath("$.board").isNotEmpty())
         .andDo(print());
   }
 
@@ -78,7 +88,17 @@ class BoardControllerTest {
 
     resultActions
         .andExpect(status().isOk())
+        .andExpect(jsonPath("$.content").isArray())
+        .andExpect(jsonPath("$.pageable").isNotEmpty())
         .andDo(print());
+
+    MvcResult mvcResult = resultActions.andReturn();
+    String jsonResponse = mvcResult.getResponse().getContentAsString();
+    JSONObject jsonObject = new JSONObject(jsonResponse);
+    JSONArray boardArray = jsonObject.getJSONArray("content");
+    int expectedBoardCount = boardRepository.findAll().size();
+    int actualBoardCount = boardArray.length();
+    assertEquals(expectedBoardCount, actualBoardCount, "게시판 수가 일치하지 않습니다.");
   }
 
 
@@ -96,6 +116,7 @@ class BoardControllerTest {
 
     resultActions
         .andExpect(status().isOk())
+        .andExpect(jsonPath("$.content").isNotEmpty())
         .andDo(print());
   }
 
@@ -124,6 +145,7 @@ class BoardControllerTest {
 
     resultActions
         .andExpect(status().isOk())
+        .andExpect(jsonPath("$.board").isNotEmpty())
         .andDo(print());
   }
 
@@ -147,5 +169,10 @@ class BoardControllerTest {
     resultActions
         .andExpect(status().isOk())
         .andDo(print());
+
+    MvcResult mvcResult = resultActions.andReturn();
+    String jsonResponse = mvcResult.getResponse().getContentAsString();
+    JSONObject jsonObject = new JSONObject(jsonResponse);
+    assertEquals(jsonObject.toString(), "success", "게시글 삭제에 실패했습니다.");
   }
 }
