@@ -81,9 +81,9 @@ public class BoardController {
         Board board = boardRepository.findById(form.getUuid())
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         if(board.getUser().getEmail().equals(principal.getName())){
-            board.setCategory(board.getCategory());
-            board.setSubject(board.getSubject());
-            board.setContents(board.getContents());
+            board.setCategory(form.getCategory());
+            board.setSubject(form.getSubject());
+            board.setContents(form.getContents());
             board.setUser(userRepository.findByEmail(principal.getName()).get());
             boardRepository.save(board);
             
