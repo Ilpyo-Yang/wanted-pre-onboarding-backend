@@ -27,7 +27,7 @@
 <br>
 
 ### ✔️ 구현한 API의 동작을 촬영한 데모 영상 링크
-+ [Postman 이용한 AWS 사용 시연영상]()
++ [Postman 이용한 AWS 사용 시연영상](https://youtu.be/x1mesQvdkjs)
 
 <br>
 
