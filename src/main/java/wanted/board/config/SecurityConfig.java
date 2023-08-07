@@ -3,7 +3,7 @@ package wanted.board.config;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -26,6 +26,7 @@ public class SecurityConfig {
         .sessionManagement(httpSecuritySessionManagementConfigurer ->
             httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(authorizeRequests -> authorizeRequests
+            .requestMatchers(HttpMethod.POST, "/api/board/").authenticated()
             .requestMatchers("/api/board/edit").authenticated()
             .requestMatchers("/api/board/delete").authenticated()
             .anyRequest().permitAll())

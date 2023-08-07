@@ -1,14 +1,11 @@
 package wanted.board.controller;
 
+import java.util.HashMap;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
@@ -29,7 +26,6 @@ public class UserController {
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
     private final UserRepository userRepository;
-//    private final AuthenticationManager authenticationManager;
 
     ModelMapper modelMapper = new ModelMapper();
 
@@ -46,10 +42,17 @@ public class UserController {
         if(vaildationCheck(dto.getEmail(), dto.getPassword())){
             return ResponseEntity.badRequest().body(error);
         }
+        if(userRepository.findByEmail(dto.getEmail())!=null){
+            return ResponseEntity.badRequest().body(error);
+        }
+
         User user = modelMapper.map(dto, User.class);
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
         userRepository.save(user);
-        return ResponseEntity.ok(tokenProvider.generateToken(user));
+
+        Map<String, String> response = new HashMap<>();
+        response.put("token", tokenProvider.generateToken(user));
+        return ResponseEntity.ok(response);
     }
 
 
@@ -62,17 +65,14 @@ public class UserController {
             return ResponseEntity.badRequest().body(error);
         }
 
-//        Authentication authentication = authenticationManager.authenticate(
-//            new UsernamePasswordAuthenticationToken(form.getEmail(), form.getPassword())
-//        );
-
         User user = userRepository.findByEmail(form.getEmail())
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         if(!passwordEncoder.matches(form.getPassword(), user.getPassword()))
             return ResponseEntity.badRequest().body(error);
 
-//        SecurityContextHolder.getContext().setAuthentication(authentication);
-        return ResponseEntity.ok(tokenProvider.generateToken(user));
+        Map<String, String> response = new HashMap<>();
+        response.put("token", tokenProvider.generateToken(user));
+        return ResponseEntity.ok(response);
     }
 
 

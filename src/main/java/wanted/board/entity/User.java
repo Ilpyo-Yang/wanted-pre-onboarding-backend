@@ -1,11 +1,16 @@
 package wanted.board.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,9 +28,14 @@ public class User extends BaseTimeEntity implements UserDetails {
   @GeneratedValue(strategy = GenerationType.UUID)
   private String uuid;
   private String name;
+  @Column(unique = true)
   private String email;
   private String password;
   private String role;
+
+  @JsonIgnore
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+  private List<Board> boards = new ArrayList<>();
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {

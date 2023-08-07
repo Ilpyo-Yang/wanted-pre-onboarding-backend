@@ -21,6 +21,5 @@ public class BoardDto {
   private String contents;
   private LocalDateTime createdDate;
   private LocalDateTime lastModifiedDate;
-  private String createdBy;
-  private String lastModifiedBy;
+  private String userUuid;
 }

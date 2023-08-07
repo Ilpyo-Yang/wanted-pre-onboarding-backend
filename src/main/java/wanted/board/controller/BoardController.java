@@ -1,6 +1,8 @@
 package wanted.board.controller;
 
 import java.security.Principal;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -31,12 +33,19 @@ public class BoardController {
 
     // 과제 3. 새로운 게시글을 생성하는 엔드포인트
     @PostMapping
-    public ResponseEntity<Object> setPost(@RequestBody BoardDto dto, Errors error){
-        Board board = modelMapper.map(dto, Board.class);
+    public ResponseEntity<Object> setPost(@RequestBody BoardDto dto, Principal principal, Errors error){
+        if(principal==null)
+            return ResponseEntity.badRequest().body("로그인이 필요한 요청입니다.");
+
+        Board board = Board.create(dto.getCategory(), dto.getSubject(), dto.getContents());
+        board.setUser(userRepository.findById(dto.getUserUuid()).get());
         boardRepository.save(board);
         if(board.getUuid()==null)
             return ResponseEntity.badRequest().body(error);
-        return ResponseEntity.ok(board.getUuid());
+
+        Map<String, String> response = new HashMap<>();
+        response.put("board", board.getUuid());
+        return ResponseEntity.ok(response);
     }
 
     // 과제 4. 게시글 목록을 조회하는 엔드포인트
@@ -71,14 +80,16 @@ public class BoardController {
 
         Board board = boardRepository.findById(form.getUuid())
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        String userUuid = userRepository.findByEmail(principal.getName())
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND)).getUuid();
-        if(board.getCreatedBy().equals(userUuid)){
+        if(board.getUser().getEmail().equals(principal.getName())){
             board.setCategory(board.getCategory());
             board.setSubject(board.getSubject());
             board.setContents(board.getContents());
+            board.setUser(userRepository.findByEmail(principal.getName()).get());
             boardRepository.save(board);
-            return ResponseEntity.ok(board.getUuid());
+            
+            Map<String, String> response = new HashMap<>();
+            response.put("board", board.getUuid());
+            return ResponseEntity.ok(response);
         }else{
             return ResponseEntity.badRequest().body(error);
         }
@@ -95,10 +106,7 @@ public class BoardController {
 
         Board board = boardRepository.findById(uuid)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-
-        String userUuid = userRepository.findByEmail(principal.getName())
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND)).getUuid();
-        if(board.getCreatedBy().equals(userUuid)){
+        if(board.getUser().getEmail().equals(principal.getName())){
             boardRepository.delete(board);
             return ResponseEntity.ok("success");
         }else{

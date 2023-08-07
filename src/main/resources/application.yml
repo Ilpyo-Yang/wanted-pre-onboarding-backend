@@ -12,7 +12,7 @@ spring:
         password: ENC(esd5Cn4+oi13KBCzy96fag8Q3XQII9L2)
         column:
             encrypt:
-                    key: ENC(vSpSQWvDSsZn/3yVCbkE51/NMgE/iB2FLVbYoiSvgdgPYPiNNXMcprpH5FXYWC0+)
+
     jpa:
         hibernate:
             ddl-auto: update

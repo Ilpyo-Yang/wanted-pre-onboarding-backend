@@ -14,7 +14,7 @@ public class JasyptConfigTest {
   public void stringEncryptorTest(){
     String test = "stringEncryptorTest";
     String encrypt_test = stringEncryptor.encrypt(test);
-    System.out.println(stringEncryptor.encrypt("qwer1234!"));
+    System.out.println(stringEncryptor.decrypt("esd5Cn4+oi13KBCzy96fag8Q3XQII9L2"));
     assert test.equals(stringEncryptor.decrypt(encrypt_test));
   }
 }
