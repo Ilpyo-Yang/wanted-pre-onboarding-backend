@@ -32,12 +32,14 @@
 <br>
 
 ### ✔️️ 구현 방법 및 이유에 대한 간략한 설명
-+ 가장 익숙하고 자신있는 언어인 Java와 Spring을 사용했습니다.
-+ 배포는 AWS EC2로 Git Clone을 이용한 방식을 사용해 배포했습니다.
-+ war 파일로 Filezila 배포 방식보다 간단한 api이기 때문에 내장 톰캣을 이용해 jar 배포 처리했습니다.
-+ 추가 고려사항
-  + 직렬화 이슈로 board의 @ManyToOne에 해당하는 변수인 User 객체를 @JsonIgnore 처리했지만, 실제 사용시 user 정보가 필요하다면 querydsl로 해당하는 dto 정보로 가져올 수 있는 방안을 고려해야 할 것 같습니다.
 
+![Group 50.png](readme_img/Group%2050.png)
+
++ 가장 익숙하고 빠르게 작성할 수 있는 언어인 Java와 Spring을 사용했습니다.
++ 배포는 무중단 배포 적용을 위해 CI/CD 툴로 Github Action을 사용하였고, AWS CodeDeploy, S3, EC2를 사용했습니다.
+  + 
+  + [배포과정 history]()
+  
 <br>
 
 ### ✔️️ API 명세(request/response 포함) [URL](https://ilpyo.notion.site/API-d989a5067e384350ae50c3022a503eec?pvs=4)
