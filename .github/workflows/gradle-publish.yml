@@ -18,6 +18,7 @@ env:
   BUCKET_NAME: wanted-board-bucket
   CODE_DEPLOY_APP_NAME: boardApi
   DEPLOYMENT_GROUP_NAME: boardApi_release_group
+  GITHUB_SHA: $ {{ GITHUB.SHA }}
 
 permissions:
   contents: read
