@@ -18,6 +18,7 @@ env:
   BUCKET_NAME: wanted-board-bucket
   CODE_DEPLOY_APP_NAME: boardApi
   DEPLOYMENT_GROUP_NAME: boardApi_release_group
+  SHA: $GITHUB_SHA
 
 permissions:
   contents: read
@@ -45,7 +46,7 @@ jobs:
       shell: bash
       
     - name: Make Zip File
-      run: zip -qq -r ./$GITHUB_SHA.zip .
+      run: zip -qq -r ./$SHA.zip .
       shell: bash
     
     - name: Configure AWS credentials
@@ -56,7 +57,7 @@ jobs:
         aws-region: ap-northeast-2
     
     - name: Upload to S3
-      run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://$BUCKET_NAME/$PROJECT_NAME/$GITHUB_SHA.zip
+      run: aws s3 cp --region ap-northeast-2 ./$SHA.zip s3://$BUCKET_NAME/$PROJECT_NAME/$SHA.zip
 
     - name: Code Deploy
-      run: aws deploy create-deployment --application-name $CODE_DEPLOY_APP_NAME --deployment-config-name CodeDeployDefault.OneAtATime --deployment-group-name $DEPLOYMENT_GROUP_NAME --s3-location bucket=$BUCKET_NAME,bundleType=zip,key=$PROJECT_NAME/$GITHUB_SHA.zip
+      run: aws deploy create-deployment --application-name $CODE_DEPLOY_APP_NAME --deployment-config-name CodeDeployDefault.OneAtATime --deployment-group-name $DEPLOYMENT_GROUP_NAME --s3-location bucket=$BUCKET_NAME,bundleType=zip,key=$PROJECT_NAME/$SHA.zip
