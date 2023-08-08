@@ -2,7 +2,7 @@
 > 개발 내역에 대한 요약  
 > + 기본 개발과제 1~7  
 > + 단위/통합 테스트 코드 작성  
-> + AWS EC2 배포
+> + AWS EC2 배포 (Github Action, AWS CodeDeploy, S3, EC2)
 
 <br>
 
@@ -37,7 +37,8 @@
 
 + 가장 익숙하고 빠르게 작성할 수 있는 언어인 Java와 Spring을 사용했습니다.
 + 배포는 무중단 배포 적용을 위해 CI/CD 툴로 Github Action을 사용하였고, AWS CodeDeploy, S3, EC2를 사용했습니다.
-  + 
+  + 이미 버전관리를 Github으로 하고 있었고, Travis 보다 세팅이 간편하고 빌드 속도가 빨라 적용하게 되었습니다.
+  + 그리고 무중단 배포 환경이지만 CI, CD 중간로직을 변경하므로서 상황에 따라 조작이 간편한 AWS CodeDeploy, S3를 사용하게 되었습니다. AWS Elastic Beanstalk도 고려했지만 커즈텀하기에 더 좋은 툴로 선택했습니다.
   + [배포과정 history]()
   
 <br>
